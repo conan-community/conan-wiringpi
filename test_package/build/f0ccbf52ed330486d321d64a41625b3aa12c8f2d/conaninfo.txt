@@ -1,0 +1,33 @@
+[settings]
+    arch=x86_64
+    build_type=Release
+    compiler=gcc
+    compiler.libcxx=libstdc++
+    compiler.version=5
+    os=Linux
+
+[requires]
+    wiringpi/2.Y.Z
+
+[options]
+
+
+[full_settings]
+    arch=x86_64
+    build_type=Release
+    compiler=gcc
+    compiler.libcxx=libstdc++
+    compiler.version=5
+    os=Linux
+
+[full_requires]
+    wiringpi/2.46@danimtb/testing:90ee443cae5dd5c1b4861766ac14dc6fae231a92
+
+[full_options]
+
+
+[recipe_hash]
+
+
+[env]
+
