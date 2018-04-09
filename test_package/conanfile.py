@@ -16,5 +16,6 @@ class DocoptTestConan(ConanFile):
         self.copy(pattern="*.dylib", src="lib", dst="bin")
 
     def test(self):
-        with tools.chdir("bin"):
-            self.run(".%stest_package" % os.sep)
+        if not tools.cross_building(self.settings):
+            with tools.chdir("bin"):
+                self.run(".%stest_package" % os.sep)
