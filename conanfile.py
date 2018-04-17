@@ -16,7 +16,7 @@ class WiringpiConan(ConanFile):
     def source(self):
         self.run("git clone git://git.drogon.net/wiringPi")
         with tools.chdir("wiringPi"):
-            self.run("git checkout %s" self.version)
+            self.run("git checkout %s" % self.version)
 
     def build(self):
         cmake = CMake(self)
