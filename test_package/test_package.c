@@ -2,8 +2,8 @@
 
 int main (void)
 {
-  wiringPiSetup();
-  pinMode(0, OUTPUT);
+    wiringPiSetup();
+    pinMode(0, OUTPUT);
 
-  return 0;
+    return 0;
 }
