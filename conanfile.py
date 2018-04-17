@@ -9,7 +9,7 @@ class WiringpiConan(ConanFile):
     url = "https://github.com/conan-community/conan-wiringpi"
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False], "fPIC": [True, False]}
-    default_options = "shared=False, fPIC=False"
+    default_options = "shared=False", "fPIC=False"
     exports = "CMakeLists.txt"
     generators = "cmake"
 
