@@ -41,5 +41,5 @@ if __name__ == "__main__":
                 break
         builder.builds = filtered_builds
 
-    builder.add_common_builds()
+    builder.add_common_builds(shared_option_name="wiringpi:shared", pure_c=True)
     builder.run()
