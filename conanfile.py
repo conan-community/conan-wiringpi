@@ -25,6 +25,7 @@ class WiringpiConan(ConanFile):
 
     def package(self):
         self.copy("*.h", src="wiringPi/wiringPi", dst="include", keep_path=True)
+        self.copy("*.a*", dst="lib", keep_path=False)
         self.copy("*.so*", dst="lib", keep_path=False)
 
     def package_info(self):
