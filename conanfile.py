@@ -14,7 +14,7 @@ class WiringpiConan(ConanFile):
     generators = "cmake"
 
     def configure(self):
-        del self.settings.libcxx
+        del self.settings.compiler.libcxx
 
         if self.settings.os in ("Windows", "Macos"):
             raise Exception("This library is not suitable for Windows/Macos")
