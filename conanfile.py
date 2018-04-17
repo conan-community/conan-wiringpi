@@ -26,7 +26,6 @@ class WiringpiConan(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        cmake.definitions['CMAKE_POSITION_INDEPENDENT_CODE'] = self.options.fPIC
         cmake.configure()
         cmake.build()
 
