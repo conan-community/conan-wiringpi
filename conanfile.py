@@ -8,10 +8,16 @@ class WiringpiConan(ConanFile):
     homepage = "http://wiringpi.com/"
     url = "https://github.com/conan-community/conan-wiringpi"
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False]}
-    default_options = "shared=False"
+    options = {"shared": [True, False], "fPIC": [True, False]}
+    default_options = "shared=False, fPIC=False"
     exports = "CMakeLists.txt"
     generators = "cmake"
+
+    def configure(self):
+        del self.settings.libcxx
+
+        if self.settings.os in ("Windows", "Macos"):
+            raise Exception("This library is not suitable for Windows/Macos")
 
     def source(self):
         self.run("git clone git://git.drogon.net/wiringPi")
@@ -20,6 +26,7 @@ class WiringpiConan(ConanFile):
 
     def build(self):
         cmake = CMake(self)
+        cmake.definitions['CMAKE_POSITION_INDEPENDENT_CODE'] = self.options.fPIC
         cmake.configure()
         cmake.build()
 
