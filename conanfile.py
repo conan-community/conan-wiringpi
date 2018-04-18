@@ -1,16 +1,18 @@
-from conans import ConanFile, AutoToolsBuildEnvironment, tools, CMake
+from conans import ConanFile, CMake, tools
 
 
 class WiringpiConan(ConanFile):
     name = "wiringpi"
     version = "2.46"
+    license = "GPLv3"
     description = "GPIO Interface library for the Raspberry Pi"
     homepage = "http://wiringpi.com/"
     url = "https://github.com/conan-community/conan-wiringpi"
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False]}
     default_options = "shared=False"
-    exports = "CMakeLists.txt"
+    exports_sources = "CMakeLists.txt"
+    exports = "LICENSE"
     generators = "cmake"
 
     def configure(self):
@@ -30,6 +32,7 @@ class WiringpiConan(ConanFile):
         cmake.build()
 
     def package(self):
+        self.copy("COPYING*", src="wiringPi", dst="licenses", keep_path=False)
         self.copy("*.h", src="wiringPi/wiringPi", dst="include", keep_path=True)
         self.copy("*.a*", dst="lib", keep_path=False)
         self.copy("*.so*", dst="lib", keep_path=False)
