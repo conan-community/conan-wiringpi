@@ -1,9 +1,11 @@
-from conans import ConanFile, CMake, tools
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import os
+from conans import ConanFile, CMake, tools
 
 
 class DocoptTestConan(ConanFile):
-    settings = "os", "compiler", "build_type", "arch", "cppstd"
+    settings = "os", "compiler", "build_type", "arch"
     generators = "cmake"
 
     def build(self):
@@ -11,11 +13,10 @@ class DocoptTestConan(ConanFile):
         cmake.configure()
         cmake.build()
 
-    def imports(self):
-        self.copy(pattern="*.dll", src="bin", dst="bin")
-        self.copy(pattern="*.dylib", src="lib", dst="bin")
-
     def test(self):
-        if not tools.cross_building(self.settings):
-            with tools.chdir("bin"):
-                self.run(".%stest_package" % os.sep)
+        if tools.cross_building(self.settings):
+            self.output.warn("Could not run test package: Cross Building")
+            return
+
+        bin_path = os.path.join("bin", "test_package")
+        self.run(bin_path, run_environment=True)
