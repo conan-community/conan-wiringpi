@@ -26,6 +26,9 @@ class WiringpiConan(ConanFile):
         if self.settings.os in ("Windows", "Macos"):
             raise ConanInvalidConfiguration("This library is not suitable for Windows/Macos")
 
+        if not "arm" in self.settings.arch:
+            raise Exception("This library is only suitable for Raspberry Pi (ARM architectures)")
+
     def source(self):
         git = tools.Git()
         git.clone("git://git.drogon.net/wiringPi", branch="master")

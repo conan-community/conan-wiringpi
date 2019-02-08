@@ -1,5 +1,6 @@
+import os
+import re
 from conan.packager import ConanMultiPackager
-import os, re
 
 
 def get_value_from_recipe(search_string):
@@ -8,8 +9,10 @@ def get_value_from_recipe(search_string):
         result = re.search(search_string, contents)
     return result
 
+
 def get_name_from_recipe():
     return get_value_from_recipe(r'''name\s*=\s*["'](\S*)["']''').groups()[0]
+
 
 def get_version_from_recipe():
     return get_value_from_recipe(r'''version\s*=\s*["'](\S*)["']''').groups()[0]
