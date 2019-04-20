@@ -7,6 +7,11 @@ if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 endif()
 
 FILE(GLOB SRC_FILES wiringPi/*.c)
+message("FILES: ${SRC_FILES}")
+if(NOT WITH_WPI_EXTENSIONS)
+  list(FILTER SRC_FILES EXCLUDE REGEX ".*wpiExtensions.c")
+  list(FILTER SRC_FILES EXCLUDE REGEX ".*drcNet.c")
+endif()
 
 add_library(${PROJECT_NAME} ${SRC_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/wiringPi)

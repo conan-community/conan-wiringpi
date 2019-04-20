@@ -6,7 +6,7 @@ from conans.errors import ConanInvalidConfiguration
 
 class WiringpiConan(ConanFile):
     name = "wiringpi"
-    version = "2.46"
+    version = "2.50"
     license = "LGPL-3.0"
     description = "GPIO Interface library for the Raspberry Pi"
     homepage = "http://wiringpi.com/"
@@ -14,8 +14,8 @@ class WiringpiConan(ConanFile):
     topics = ("conan", "wiringpi", "gpio", "raspberrypi")
     url = "https://github.com/conan-community/conan-wiringpi"
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False], "fPIC": [True, False]}
-    default_options = {"shared": False, "fPIC": True}
+    options = {"shared": [True, False], "fPIC": [True, False], "wpiExtensions": [True, False]}
+    default_options = {"shared": False, "fPIC": True, "wpiExtensions": False}
     exports_sources = "CMakeLists.txt"
     exports = "LICENSE"
     generators = "cmake"
@@ -26,9 +26,6 @@ class WiringpiConan(ConanFile):
         if self.settings.os in ("Windows", "Macos"):
             raise ConanInvalidConfiguration("This library is not suitable for Windows/Macos")
 
-        if not "arm" in self.settings.arch:
-            raise Exception("This library is only suitable for Raspberry Pi (ARM architectures)")
-
     def source(self):
         git = tools.Git()
         git.clone("git://git.drogon.net/wiringPi", branch="master")
@@ -36,6 +33,8 @@ class WiringpiConan(ConanFile):
 
     def _configure_cmake(self):
         cmake = CMake(self)
+        if self.options.wpiExtensions:
+            cmake.definitions["WITH_WPI_EXTENSIONS"] = "ON"
         cmake.configure()
         return cmake
 
@@ -49,4 +48,7 @@ class WiringpiConan(ConanFile):
         cmake.install()
 
     def package_info(self):
-        self.cpp_info.libs = ["wiringPi", "pthread", "crypt", "m", "rt"]
+        self.cpp_info.libs = ["wiringPi", "pthread"]
+        if self.options.wpiExtensions:
+            self.cpp_info.libs.append("crypt")
+        self.cpp_info.libs.extend(["m", "rt"])
