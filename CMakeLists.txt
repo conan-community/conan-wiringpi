@@ -18,6 +18,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${CONAN_LIBS})
 
 if(WITH_DEV_LIB)
     FILE(GLOB SRC_FILES devLib//*.c)
+    list(FILTER SRC_FILES EXCLUDE REGEX ".*piFaceOld.c")
     add_library(wiringPiDevLib ${SRC_FILES})
     target_include_directories(wiringPiDevLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/devLib ${CMAKE_CURRENT_SOURCE_DIR}/wiringPi)
 endif()
