@@ -7,7 +7,6 @@ if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 endif()
 
 FILE(GLOB SRC_FILES wiringPi/*.c)
-message("FILES: ${SRC_FILES}")
 if(NOT WITH_WPI_EXTENSIONS)
   list(FILTER SRC_FILES EXCLUDE REGEX ".*wpiExtensions.c")
   list(FILTER SRC_FILES EXCLUDE REGEX ".*drcNet.c")
@@ -17,6 +16,12 @@ add_library(${PROJECT_NAME} ${SRC_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/wiringPi)
 target_link_libraries(${PROJECT_NAME} PUBLIC ${CONAN_LIBS})
 
+if(WITH_DEV_LIB)
+    FILE(GLOB SRC_FILES devLib//*.c)
+    add_library(wiringPiDevLib ${SRC_FILES})
+    target_include_directories(wiringPiDevLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/devLib ${CMAKE_CURRENT_SOURCE_DIR}/wiringPi)
+endif()
+
 install(TARGETS ${PROJECT_NAME}
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
@@ -24,3 +29,14 @@ install(TARGETS ${PROJECT_NAME}
 
 install(DIRECTORY wiringPi/ DESTINATION include
         FILES_MATCHING PATTERN "*.h")
+
+if(WITH_DEV_LIB)
+
+    install(TARGETS wiringPiDevLib
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
+
+    install(DIRECTORY devLib/ DESTINATION include
+            FILES_MATCHING PATTERN "*.h")
+endif()

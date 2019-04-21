@@ -14,9 +14,15 @@ class WiringpiConan(ConanFile):
     topics = ("conan", "wiringpi", "gpio", "raspberrypi")
     url = "https://github.com/conan-community/conan-wiringpi"
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False], "fPIC": [True, False], "wpiExtensions": [True, False]}
-    default_options = {"shared": False, "fPIC": True, "wpiExtensions": False}
-    exports_sources = "CMakeLists.txt"
+    options = {"shared": [True, False], "fPIC": [True, False],
+               "wpiExtensions": [True, False], "withDevLib": [True, False],
+               "skipHWDetectionRPIModel3": [True, False]}
+    default_options = {"shared": False, "fPIC": True,
+                       "wpiExtensions": False, "withDevLib": True,
+                       "skipHWDetectionRPIModel3": False}
+    # the library doesn't manage very well other than raspbian so the skipHWDetectionRPIModel3
+    # will force using original RPI3 Model B, 1GB RAM
+    exports_sources = "CMakeLists.txt", "*.patch"
     exports = "LICENSE"
     generators = "cmake"
 
@@ -30,11 +36,16 @@ class WiringpiConan(ConanFile):
         git = tools.Git()
         git.clone("git://git.drogon.net/wiringPi", branch="master")
         git.checkout(self.version)
+        if self.options.skipHWDetectionRPIModel3:
+            tools.patch(".", "pi3_patch_detect.patch")
+            self.output.warn("Patched to skip hardware detection, always RPI3 Model B")
 
     def _configure_cmake(self):
         cmake = CMake(self)
         if self.options.wpiExtensions:
             cmake.definitions["WITH_WPI_EXTENSIONS"] = "ON"
+        if self.options.withDevLib:
+            cmake.definitions["WITH_DEV_LIB"] = "ON"
         cmake.configure()
         return cmake
 
@@ -48,7 +59,10 @@ class WiringpiConan(ConanFile):
         cmake.install()
 
     def package_info(self):
-        self.cpp_info.libs = ["wiringPi", "pthread"]
+        self.cpp_info.libs = ["wiringPi"]
+        if self.options.withDevLib:
+            self.cpp_info.libs.append("wiringPiDevLib")
+        self.cpp_info.libs.append("pthread")
         if self.options.wpiExtensions:
             self.cpp_info.libs.append("crypt")
         self.cpp_info.libs.extend(["m", "rt"])
