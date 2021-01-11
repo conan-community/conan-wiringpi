@@ -25,6 +25,7 @@ class WiringpiConan(ConanFile):
     exports_sources = "CMakeLists.txt", "*.patch"
     exports = "LICENSE"
     generators = "cmake"
+    deprecated = "wiringpi/2.50@"
 
     def configure(self):
         del self.settings.compiler.libcxx
